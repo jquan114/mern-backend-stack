@@ -40,6 +40,7 @@ const People = mongoose.model("People", PeopleSchema);
 app.use(cors()); // to prevent cors errors, open access to all origins
 app.use(morgan("dev")); // logging
 app.use(express.json()); // parse json bodies
+app.use(express.urlencoded({ extended: true }));
 
 
 
@@ -69,12 +70,12 @@ app.post("/people", async (req, res) => {
     }
 });
 //PEOPLE DELETE ROUTE
-app.delete("people/:id", async (req,res) => {
+app.delete("/people/:id", async (req,res) => {
     try {
         // send all people
         res.json(await People.findByIdAndRemove(req.params.id));
     }catch(error) {
-        res.status(4000).json(error);
+        res.status(400).json(error);
     }
 });
 
@@ -83,10 +84,11 @@ app.put("/people/:id", async (req,res) => {
     try{
         //send all people
         res.json(
-            await People.findByIdAndRemove(req.params.id,req.body, { new:true})
+            await People.findByIdAndUpdate(req.params.id,req.body, { new:true})
         );
     } catch(error) {
-        res.status(4000).json(error);
+        console.log(error)
+        res.status(400).json(error);
     }
 });
 
